@@ -1,0 +1,21 @@
+{% load menu_tags %}
+{% if menu_items %}
+	<div class="uk-navbar-dropdown" uk-dropdown="animation: slide-left; ; pos: right-top; animate-out: true; duration: 500; offset: 25">
+		<ul class="uk-nav uk-navbar-dropdown-nav">
+		{% for item in menu_items %}
+			<li>
+				<a href="{{ item.href }}">
+					<span class="ws">{{ item.text }}</span>
+					{% if item.has_children_in_menu %}
+						<span uk-icon="icon: chevron-right"></span>
+					{% endif %}
+				</a>
+				{% if item.has_children_in_menu %}
+					{% sub_menu item %}
+				{% endif %}
+			</li>
+			<li class="uk-nav-divider"></li>
+		{% endfor %}
+		</ul>
+	</div>
+{% endif %}

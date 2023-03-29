@@ -1,0 +1,13 @@
+{% load wagtailimages_tags %}
+
+
+<div class="imgleft">
+    <div class="uk-grid-small uk-grid">
+        <div class="uk-width-auto@s uk-width-1-1">
+            <div class="imgleft">{% image value.imgleft max-600x300 %}</div>
+        </div>
+        <div class="uk-width-expand@s uk-width-1-1">
+            <div class="txtright">{{ value.txtright }}</div>
+        </div>
+    </div>
+</div>

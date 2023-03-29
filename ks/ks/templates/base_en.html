@@ -43,24 +43,19 @@
     {# Override this in templates to add extra stylesheets #}
     {% endblock %}
 </head>
-{% load wagtailuserbar %}
+
 <body class="{% block body_class %}{% endblock %}">
-{% get_current_language as LANGUAGE_CODE %}
+
     <!-- Flat menu -->
     <div uk-sticky>
         <div>
             <nav class="uk-navbar-container" uk-navbar style="position: relative; z-index: 980;">
                 <div class="uk-navbar-center">
-
-
-
                     {% if LANGUAGE_CODE == "ru" %}
                         {% flat_menu 'fm' max_levels=3 template="flat_menu.html" sub_menu_templates="flat_menu_2.html, flat_menu_3.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
                     {% else %}
                         {% flat_menu 'fm_en' max_levels=3 template="flat_menu.html" sub_menu_templates="flat_menu_2.html, flat_menu_3.html" show_menu_heading=False fall_back_to_default_site_menus=True %}
                     {% endif %}
-
-
                 </div>
             </nav>
         </div>
@@ -80,7 +75,6 @@
         </div>
     </div>
 
-
  <!-- Header -->
     <div class="uk-section uk-section-default uk-section-xsmall">
         <div class="uk-container uk-container-large">
@@ -92,8 +86,8 @@
 
                     <div class="uk-width-expand uk-flex-middle" uk-grid>
                         <div>
-                            <h1 >Центр природных ресурсов и устойчивого развития</h1>
-                            <h2>Казахстанско-Немецкий Университет</h2>
+                            <h1>Center for Nature Resources and Sustainability</h1>
+                            <h2>Kazakh-German University</h2>
                         </div>
                     </div>
                 </div>
@@ -118,30 +112,29 @@
              style="background-image: url(/media/images/dis/footer-fon-1600x450.jpg);">
             <div class="uk-container uk-container-large ">
                 <div class="uk-grid-medium uk-margin-medium-bottom uk-margin-medium-top" uk-grid>
-                    <div class="uk-width-1-1 uk-width-1-4@l uk-width-1-3@m whitetext nunito-font">
+                     <div class="uk-width-1-1 uk-width-1-4@l uk-width-1-3@m whitetext nunito-font">
 
                         <p class="uk-margin-small-bottom">
-                            <b> По всем вопросам сотрудничества обращайтесь по эл.адресу:</b><br> <a class="overlay-link" href="mailto:nri@dku.kz">nri@dku.kz</a>
+                            <b> For questions about cooperation, please contact us at</b> <a class="overlay-link" href="mailto:nri@dku.kz">nri@dku.kz</a>
                         </p>
-                        <p class="uk-margin-small-bottom"><b>Приемная комиссия:</b><br>
+                        <p class="uk-margin-small-bottom"><b>Admissions Office:</b><br>
                         <ul>
 
-                            <li>+7 727 355 05 51 (вн. 229)</li>
+                            <li>+7 727 355 05 51 (Ext. 229)</li>
                             <li><a class="overlay-link" href="mailto:admissions@dku.kz">admissions@dku.kz</a></li>
                         </ul></p>
                         <div>
                             <div class="uk-margin-small-bottom">
-                                <b>Присоединяйтесь к нам в соц.сетях:</b>
+                                <b>Join us on social networks:</b>
                             </div>
                             <a href="https://www.instagram.com/dku.nri/"  target="_blank" class="uk-icon-button uk-margin-small-right" uk-icon="instagram"></a>
                             <a href="https://www.facebook.com/NRIKGU/"  target="_blank" class="uk-icon-button  uk-margin-small-right" uk-icon="facebook"></a>
                             <a href="https://www.youtube.com/channel/UCJXUcvltn0ll_ESWyV94MLg/"  target="_blank" class="uk-icon-button" uk-icon="youtube"></a>
                         </div>
                         <div class="uk-margin-small">
-<!--                            <button class="uk-button uk-button-send nunito-font">Отправить сообщение</button>-->
-
+                             {% form_modal %}
                         </div>
-                    </div>
+                     </div>
                     <div class="uk-width-1-1 uk-width-3-4@l uk-width-2-3@m ">
                         <div class="whiteborder">
                             <script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3A4adbdde5f5705c3afcf463b4a492ce0e7ae1b56a25357d9dea2b630d1662d491&amp;width=100%25&amp;height=354&amp;lang=ru_RU&amp;scroll=true"></script>
