@@ -105,5 +105,56 @@ class AuthorsList(Page):
         verbose_name = "Список Авторов"
 
 
+class BestPubList(Orderable):
+    """Объединяет категории контента в сортируемый список"""
+    # menuitempage ссылка на родителя менюпейдж
+    bestpub_parent = ParentalKey('home.HomePage', on_delete=models.CASCADE, related_name='bestpub_list')
+    #workcategoryitem ссылка на категорию в снипите
+    bestpub_item = models.ForeignKey('pubs.Pubs', on_delete=models.CASCADE, related_name='+')
+
+    class Meta(Orderable.Meta):
+        verbose_name = "Список популярных публикаций"
+
+    panels = [
+        FieldPanel('bestpub_item', heading='Публикация'),
+    ]
+
+    def __str__(self):
+        return self.pubs.title
+
+
+class NewPubList(Orderable):
+    """Объединяет категории контента в сортируемый список"""
+    # menuitempage ссылка на родителя менюпейдж
+    newpub_parent = ParentalKey('home.HomePage', on_delete=models.CASCADE, related_name='newpub_list')
+    #workcategoryitem ссылка на категорию в снипите
+    newpub_item = models.ForeignKey('pubs.Pubs', on_delete=models.CASCADE, related_name='+')
+
+    class Meta(Orderable.Meta):
+        verbose_name = "Список новых публикаций"
+
+    panels = [
+        FieldPanel('newpub_item', heading='Новые Публикации'),
+    ]
+
+    def __str__(self):
+        return self.pubs.title
+
 class HomePage(Page):
-    pass
+    # Поля категорий и фильтров
+    main_author = ParentalManyToManyField('home.Authors', blank=True)
+
+    content_panels = Page.content_panels + [
+        MultiFieldPanel(
+            [
+                FieldPanel('main_author', heading='Популярные авторы'),
+                InlinePanel('bestpub_list', label="Популярные публикации"),
+                InlinePanel('newpub_list', label="Новые публикации"),
+            ],
+            heading="Новые и популярные публикации, Популярные авторы",
+        ),
+    ]
+
+
+class Meta:
+    verbose_name = "Главная страница"

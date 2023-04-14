@@ -1,0 +1,130 @@
+{% extends "internalbase.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags %}
+{% block lcolumn %}
+<ul uk-nav>
+    <li class="li-divider"></li>
+    <li class="uk-parent">
+        <a href="{{ item.href }}">Разделы<span uk-navbar-parent-icon></span></a>
+<!--    Подменю-->
+
+
+            <ul uk-nav class="uk-nav-sub">
+                <li>
+                    <a href="/ru/components/?comp=Учебные пособия"><span class="fs14 widthcanvastext">Учебные пособия</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/components/?comp=Научные публикации"><span class="fs14 widthcanvastext">Научные публикации</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/components/?comp=Материалы конференций"><span class="fs14 widthcanvastext">Материалы конференций</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/components/?comp=Книги"><span class="fs14 widthcanvastext">Книги</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/components/?comp=Директивные документы"><span class="fs14 widthcanvastext">Директивные документы</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/components/?comp=Видео"><span class="fs14 widthcanvastext">Видео</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/components/?comp=Доклады"><span class="fs14 widthcanvastext">Доклады</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+
+            </ul>
+
+    </li>
+
+</ul>
+
+{% endblock %}
+
+{% block rcolumn %}
+
+<!--Общая информация о публикации-->
+<div uk-grid>
+    <div class="uk-width-1-1" uk-grid>
+        <div class="uk-width-1-1 uk-width-1-2@s uk-flex uk-flex-center">
+            <div class="uk-panel uk-cover-container uk-padding-small">
+                {% image page.pubs_photo fill-425x600 class="uk-cover shadow10" %}
+            </div>
+        </div>
+        <div class="uk-width-1-1 uk-width-1-2@s">
+            <div>
+                <h3>{{ page.pubs_header }}</h3>
+                <p class="pubs_category"><span>Год:</span> {{ page.pubs_god }}</p>
+                <p class="pubs_category"><span>Разделы: </span>
+                    {% for component in page.pubs_components.all %}
+                        {{ component.component_name_ru }}{% if component.pk != page.pubs_components.last.pk  %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p class="pubs_category"><span>Темы: </span>
+                    {% for topic in page.pubs_topics.all %}
+                        {{ topic.topic_name_ru }}{% if topic.pk != page.pubs_topics.last.pk  %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p class="pubs_category"><span>Авторы: </span>
+                    {% for author in page.pubs_author.all %}
+                        {{ author.authors_full_name }}{% if author.pk != page.pubs_author.last.pk  %}, {% endif %}
+                    {% endfor %}
+                </p>
+                <p class="pubs_category"><span>Страны: </span>
+                    {% for country in page.pubs_countries.all %}
+                        {{ country.country_name_ru }}{% if country.pk != page.pubs_countries.last.pk  %}, {% endif %}
+                    {% endfor %}
+                </p>
+
+                <div>{{ page.pubs_intro | richtext }}</div>
+
+                <p class="pubs_category">Файлы для скачивания:</p>
+                <ul class="">
+                    {% for item in page.pubs_documents.all %}
+                    <li>
+                        <a class="" target="_blank" href="{{ item.pubs_doc.url }}">{{ item.pubs_doc.title }}</a>
+
+                    </li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div>{{ page.pubs_description | richtext }}</div>
+    {% include_block page.pubs_body %}
+<!-- Childrens -->
+{% if page.pubs_vitrina %}
+<div class="uk-section uk-section-default uk-section-xsmall">
+    <div class="uk-child-width-1-2" uk-grid>
+
+        {% for children in childrenpages %}
+        <div>
+            <div class="uk-inline">
+                {% with children=children.specific %}
+                    {% with children.main_image as main_image %}
+                        {% if main_image %}
+                        {% image main_image fill-500x330 %}
+                        {% endif %}
+                    {% endwith %}
+                <div class="uk-overlay uk-overlay-default uk-position-bottom  uk-flex uk-flex-middle uk-flex-center uk-text-center">
+                    <a class="overlay-link" href="{% pageurl children %}">{{ children.title }}</a>
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% include_block page.pubs_body_bottom %}    
+</div>
+
+
+{% endblock %}
