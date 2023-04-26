@@ -2,49 +2,7 @@
 
 {% load wagtailcore_tags wagtailimages_tags %}
 {% block lcolumn %}
-<ul uk-nav>
-    <li class="li-divider"></li>
-    <li class="uk-parent">
-        <a href="{{ item.href }}">Разделы<span uk-navbar-parent-icon></span></a>
-<!--    Подменю-->
-
-
-            <ul uk-nav class="uk-nav-sub">
-                <li>
-                    <a href="/ru/components/?comp=Учебные пособия"><span class="fs14 widthcanvastext">Учебные пособия</span></a>
-                </li>
-                <li class="uk-nav-divider"></li>
-                <li>
-                    <a href="/ru/components/?comp=Научные публикации"><span class="fs14 widthcanvastext">Научные публикации</span></a>
-                </li>
-                <li class="uk-nav-divider"></li>
-                <li>
-                    <a href="/ru/components/?comp=Материалы конференций"><span class="fs14 widthcanvastext">Материалы конференций</span></a>
-                </li>
-                <li class="uk-nav-divider"></li>
-                <li>
-                    <a href="/ru/components/?comp=Книги"><span class="fs14 widthcanvastext">Книги</span></a>
-                </li>
-                <li class="uk-nav-divider"></li>
-                <li>
-                    <a href="/ru/components/?comp=Директивные документы"><span class="fs14 widthcanvastext">Директивные документы</span></a>
-                </li>
-                <li class="uk-nav-divider"></li>
-                <li>
-                    <a href="/ru/components/?comp=Видео"><span class="fs14 widthcanvastext">Видео</span></a>
-                </li>
-                <li class="uk-nav-divider"></li>
-                <li>
-                    <a href="/ru/components/?comp=Доклады"><span class="fs14 widthcanvastext">Доклады</span></a>
-                </li>
-                <li class="uk-nav-divider"></li>
-
-            </ul>
-
-    </li>
-
-</ul>
-
+{% include "filtermenu.html" %}
 {% endblock %}
 
 {% block rcolumn %}
@@ -59,7 +17,7 @@
         </div>
         <div class="uk-width-1-1 uk-width-1-2@s">
             <div>
-                <h3>{{ page.pubs_header }}</h3>
+                <h3>- {{ page.pubs_header }} -</h3>
                 <p class="pubs_category"><span>Год:</span> {{ page.pubs_god }}</p>
                 <p class="pubs_category"><span>Разделы: </span>
                     {% for component in page.pubs_components.all %}

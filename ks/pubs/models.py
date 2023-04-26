@@ -11,7 +11,7 @@ from wagtail.snippets.models import register_snippet
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 
-    #Публикации основной класс
+# Публикации основной класс
 class Pubs(Page):
     localize_default_translation_mode = "simple"
     # Основные поля
@@ -130,6 +130,7 @@ class Pubs(Page):
             classname="collapsed",
         ),
     ]
+
     class Meta:
         verbose_name = "Страница публикации"
 
@@ -147,13 +148,98 @@ class PubDocuments(Orderable):
     ]
 
 
+# Публикации по разделам
 class PubsComponents(Page):
 
     def get_context(self, request):
         # Filter by cat
         comp = request.GET.get('comp')
-        pubs = Pubs.objects.filter(pubs_components__component_name_ru=comp)
+        if comp:
+            pubs = Pubs.objects.filter(pubs_components__component_name_ru=comp)
+            if pubs:
+                pubs_comp = pubs.first().pubs_components.filter(component_name_ru=comp)
+                if self.locale.language_code == "en":
+                    filter_header = 'Component: ' + pubs_comp[0].component_name_en
+                else:
+                    filter_header = 'Раздел: ' + pubs_comp[0].component_name_ru
+            else:
+                filter_header = 'Publications not found'
+        else:
+            pubs = Pubs.objects.all()
+            if self.locale.language_code == "en":
+                filter_header = 'All publications'
+            else:
+                filter_header = 'Все публикации'
         # Update template context
+
         context = super().get_context(request)
         context['pubs'] = pubs
+        context['filter'] = 'comp'
+        print('заголовок - ')
+        print(filter_header)
+        context['filter_header'] = filter_header
+        return context
+
+
+# Публикации по темам
+class PubsTopics(Page):
+    def get_context(self, request):
+        # Filter by cat
+        topic = request.GET.get('topic')
+        if topic:
+            pubs = Pubs.objects.filter(pubs_topics__topic_name_ru=topic)
+            if pubs:
+                pubs_topic = pubs.first().pubs_topics.filter(topic_name_ru=topic)
+                if self.locale.language_code == "en":
+                    filter_header = 'Topic: ' + pubs_topic[0].topic_name_en
+                else:
+                    filter_header = 'Тема: ' + pubs_topic[0].topic_name_ru
+            else:
+                filter_header = 'Publications not found'
+        else:
+            pubs = Pubs.objects.all()
+            if self.locale.language_code == "en":
+                filter_header = 'All publications'
+            else:
+                filter_header = 'Все публикации'
+        # Update template context
+
+        context = super().get_context(request)
+        context['pubs'] = pubs
+        context['filter'] = 'topic'
+        print('заголовок - ')
+        print(filter_header)
+        context['filter_header'] = filter_header
+        return context
+
+
+# Публикации по странам
+class PubsCountries(Page):
+    def get_context(self, request):
+        # Filter by cat
+        country = request.GET.get('country')
+        if country:
+            pubs = Pubs.objects.filter(pubs_countries__country_name_ru=country)
+            if pubs:
+                pubs_country = pubs.first().pubs_countries.filter(country_name_ru=country)
+                if self.locale.language_code == "en":
+                    filter_header = 'Country: ' + pubs_country[0].country_name_en
+                else:
+                    filter_header = 'Страна: ' + pubs_country[0].country_name_ru
+            else:
+                filter_header = 'Publications not found'
+        else:
+            pubs = Pubs.objects.all()
+            if self.locale.language_code == "en":
+                filter_header = 'All publications'
+            else:
+                filter_header = 'Все публикации'
+        # Update template context
+
+        context = super().get_context(request)
+        context['pubs'] = pubs
+        context['filter'] = 'country'
+        print('заголовок - ')
+        print(filter_header)
+        context['filter_header'] = filter_header
         return context

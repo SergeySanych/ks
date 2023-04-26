@@ -1,0 +1,107 @@
+{% load wagtailimages_tags %}
+
+<div class="uk-padding-small">
+    <ul uk-nav>
+        <li class="uk-parent{% if filter == 'comp'  %} uk-open{% endif %}">
+            <a href="{{ item.href }}">Разделы<span uk-navbar-parent-icon></span></a>
+    <!--    Подменю-->
+
+
+                <ul uk-nav class="uk-nav-sub">
+                    <li>
+                        <a href="/ru/components/?comp=Учебные пособия"><span class="fs14 widthcanvastext">Учебные пособия</span></a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                    <li>
+                        <a href="/ru/components/?comp=Научные публикации"><span class="fs14 widthcanvastext">Научные публикации</span></a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                    <li>
+                        <a href="/ru/components/?comp=Материалы конференций"><span class="fs14 widthcanvastext">Материалы конференций</span></a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                    <li>
+                        <a href="/ru/components/?comp=Книги"><span class="fs14 widthcanvastext">Книги</span></a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                    <li>
+                        <a href="/ru/components/?comp=Директивные документы"><span class="fs14 widthcanvastext">Директивные документы</span></a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                    <li>
+                        <a href="/ru/components/?comp=Видео"><span class="fs14 widthcanvastext">Видео</span></a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+                    <li>
+                        <a href="/ru/components/?comp=Доклады"><span class="fs14 widthcanvastext">Доклады</span></a>
+                    </li>
+                    <li class="uk-nav-divider"></li>
+
+                </ul>
+
+        </li>
+        <li class="uk-parent{% if filter == 'topic'  %} uk-open{% endif %}">
+            <a href="{{ item.href }}">Темы<span uk-navbar-parent-icon></span></a>
+            <!--    Подменю-->
+
+
+            <ul uk-nav class="uk-nav-sub">
+                <li>
+                    <a href="/ru/topics/?topic=Экологическое предпринимательство"><span
+                            class="fs14 widthcanvastext">Экологическое предпринимательство</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/topics/?topic=Сельское хозяйство"><span class="fs14 widthcanvastext">Сельское хозяйство</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/topics/?topic=Энергетика"><span class="fs14 widthcanvastext">Энергетика</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/topics/?topic=Климат"><span class="fs14 widthcanvastext">Климат</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/topics/?topic=Вода"><span class="fs14 widthcanvastext">Вода</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+
+            </ul>
+
+        </li>
+        <li class="uk-parent{% if filter == 'country'  %} uk-open{% endif %}">
+            <a href="{{ item.href }}">Страны<span uk-navbar-parent-icon></span></a>
+            <!--    Подменю-->
+
+
+            <ul uk-nav class="uk-nav-sub">
+                <li>
+                    <a href="/ru/countries/?country=Казахстан"><span
+                            class="fs14 widthcanvastext">Казахстан</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/countries/?country=Кыргызстан"><span class="fs14 widthcanvastext">Кыргызстан</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/countries/?country=Узбекистан"><span class="fs14 widthcanvastext">Узбекистан</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/countries/?country=Таджикистан"><span class="fs14 widthcanvastext">Таджикистан</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="/ru/countries/?country=Туркменистан"><span class="fs14 widthcanvastext">Туркменистан</span></a>
+                </li>
+                <li class="uk-nav-divider"></li>
+
+            </ul>
+
+        </li>        
+        
+    </ul>
+</div>
