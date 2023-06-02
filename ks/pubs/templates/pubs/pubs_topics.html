@@ -16,12 +16,16 @@
 
                     <div class="uk-width-1-1 uk-width-1-4@s uk-flex uk-flex-center uk-padding-small">
                         <div>
-                            {% image pub.pubs_photo fill-425x600 class="uk-cover shadow10" %}
+                            <a  href="{% pageurl pub %}">
+                                {% image pub.pubs_photo fill-425x600 class="uk-cover shadow10" %}
+                            </a>
                         </div>
                     </div>
                     <div class="uk-width-1-1 uk-width-3-4@s">
                         <div>
-                            <h5>{{ pub.pubs_header }}</h5>
+                            <a  href="{% pageurl pub %}">
+                                <h5>{{ pub.pubs_header }}</h5>
+                            </a>
                             <p class="pubs_category"><span>Год:</span> {{ pub.pubs_god }}</p>
                             <p class="pubs_category"><span>Разделы: </span>
                                 {% for component in pub.pubs_components.all %}
@@ -54,4 +58,46 @@
         {% endwith %}
     {% endfor %}
 
+
+{% if pubs.paginator.num_pages > 1 %}
+<div class="pagination">
+    {% if filter %}
+        <span class="page-item">
+        {% if pubs.has_previous %}
+            <a href="?topic={{ filter }}&page={{ pubs.previous_page_number }}" class="page-spannk">
+                <span>&laquo; </span>
+            </a>
+        {% endif %}
+        </span>
+            {% for page_num in pubs.paginator.page_range %}
+            <span class="page-item {% if page_num == pubs.number %} active{% endif %}">
+            <a href="?topic={{ filter }}&page={{ page_num }}" class="page-spannk"> {{ page_num }}</a>
+            </span>
+        {% endfor %}
+        {% if pubs.has_next %}
+            <span class="page-item">
+            <a href="?topic={{ filter }}&page={{ posts.next_page_number }}" class="page-link"><span>&raquo;</span></a>
+            </span>
+        {% endif %}
+    {% else %}
+        <span class="page-item">
+        {% if pubs.has_previous %}
+            <a href="?page={{ pubs.previous_page_number }}" class="page-spannk">
+                <span>&laquo; </span>
+            </a>
+        {% endif %}
+        </span>
+        {% for page_num in pubs.paginator.page_range %}
+            <span class="page-item {% if page_num == pubs.number %} active{% endif %}">
+            <a href="?page={{ page_num }}" class="page-spannk"> {{ page_num }}</a>
+            </span>
+        {% endfor %}
+        {% if pubs.has_next %}
+            <span class="page-item">
+            <a href="?page={{ posts.next_page_number }}" class="page-link"><span>&raquo;</span></a>
+            </span>
+        {% endif %}
+    {% endif %}
+</div>
+{% endif %}
 {% endblock %}

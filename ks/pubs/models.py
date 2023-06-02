@@ -1,5 +1,6 @@
 from django.db import models
 from django import forms
+from django.db.models import Count, Sum, F, Q
 from wagtail.models import Page, Orderable, Locale
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.fields import RichTextField, StreamField
@@ -7,11 +8,17 @@ from wagtail import blocks
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel, FieldRowPanel, PageChooserPanel
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from string import ascii_uppercase
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
 
 # Публикации основной класс
+from home.models import Authors
+from home.models import Topics
+
+
 class Pubs(Page):
     localize_default_translation_mode = "simple"
     # Основные поля
@@ -28,6 +35,7 @@ class Pubs(Page):
     pubs_topics = ParentalManyToManyField('home.Topics', blank=True)
     pubs_components = ParentalManyToManyField('home.Components', blank=True)
     pubs_countries = ParentalManyToManyField('home.Countries', blank=True)
+    pubs_count = models.IntegerField(verbose_name='Всего просмотров публикации', default=0)
 
     # Поля для расширенного контента
     pubs_vitrina = models.BooleanField(verbose_name="Показывать витрину", default=False)
@@ -79,6 +87,9 @@ class Pubs(Page):
     def get_context(self, request):
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
+        self.pubs_count = self.pubs_count + 1
+        self.save()
+        print("Количество просмотров - ", self.pubs_count)
 
         childrenpages = self.get_children().all().live().order_by('first_published_at')
         context['childrenpages'] = childrenpages
@@ -170,11 +181,27 @@ class PubsComponents(Page):
                 filter_header = 'All publications'
             else:
                 filter_header = 'Все публикации'
-        # Update template context
 
+        # Пагинация
+        paginator = Paginator(pubs, 5)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        # Update template context
         context = super().get_context(request)
-        context['pubs'] = pubs
-        context['filter'] = 'comp'
+        context['pubs'] = posts
+        #context["posts"] = posts
+        context['filter'] = comp
         print('заголовок - ')
         print(filter_header)
         context['filter_header'] = filter_header
@@ -202,11 +229,26 @@ class PubsTopics(Page):
                 filter_header = 'All publications'
             else:
                 filter_header = 'Все публикации'
-        # Update template context
 
+        # Пагинация
+        paginator = Paginator(pubs, 5)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        # Update template context
         context = super().get_context(request)
-        context['pubs'] = pubs
-        context['filter'] = 'topic'
+        context['pubs'] = posts
+        context['filter'] = topic
         print('заголовок - ')
         print(filter_header)
         context['filter_header'] = filter_header
@@ -234,12 +276,168 @@ class PubsCountries(Page):
                 filter_header = 'All publications'
             else:
                 filter_header = 'Все публикации'
-        # Update template context
 
+        # Пагинация
+        paginator = Paginator(pubs, 5)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        # Update template context
         context = super().get_context(request)
-        context['pubs'] = pubs
-        context['filter'] = 'country'
+        context['pubs'] = posts
+        context['filter'] = country
         print('заголовок - ')
         print(filter_header)
         context['filter_header'] = filter_header
         return context
+
+
+# Публикации по авторам
+class PubsAuthors(Page):
+    def get_context(self, request):
+        # Filter by cat
+        letter = request.GET.get('letter')
+        if letter:
+            authors = Authors.objects.filter(authors_full_name__istartswith=letter)
+            if authors:
+                if self.locale.language_code == "en":
+                    filter_header = 'Authors'
+                else:
+                    filter_header = 'Авторы'
+            else:
+                filter_header = 'Publications not found'
+        else:
+            authors = Authors.objects.all()
+            if self.locale.language_code == "en":
+                filter_header = 'Authors'
+            else:
+                filter_header = 'Авторы'
+
+        authors = authors.filter(locale=Locale.get_active())
+        authors = authors.order_by('authors_full_name')
+
+        # Пагинация
+        paginator = Paginator(authors, 10)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        pubs = Pubs.objects.all()
+
+
+        # Update template context
+        context = super().get_context(request)
+        context['pubs'] = pubs.filter(locale=Locale.get_active())
+        context["authors"] = posts
+        context['alphabet'] = list(ascii_uppercase)
+        context['alphabet_ru'] = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ы', 'Э', 'Ю', 'Я']
+        context['filter'] = letter
+        print('заголовок - ')
+        print(filter_header)
+        context['filter_header'] = filter_header
+        return context
+
+
+#Публикации по годам
+class PubsDate(Page):
+    def get_context(self, request):
+        # Filter by cat
+        date = request.GET.get('date')
+        if date:
+            pubs = Pubs.objects.filter(pubs_god=date)
+            print(date)
+            print(pubs)
+            if pubs:
+                filter_header = date
+            else:
+                filter_header = 'Publications not found'
+        else:
+            pubs = Pubs.objects.all()
+            if self.locale.language_code == "en":
+                filter_header = 'All publications by date'
+            else:
+                filter_header = 'Все публикации по годам'
+
+        # Список годов сгруппированных с указанием количества публикаций
+        datelist = Pubs.objects.filter(locale=Locale.get_active()).order_by('pubs_god').values('pubs_god').annotate(total_count=Count('pubs_god'))
+        pubs = pubs.order_by('-pubs_god').filter(locale=Locale.get_active())
+
+        # Пагинация
+        paginator = Paginator(pubs, 5)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        # Update template context
+        context = super().get_context(request)
+        context['datelist'] = datelist
+        context['pubs'] = posts
+        context['filter'] = date
+        print('заголовок - ')
+        print(filter_header)
+        context['filter_header'] = filter_header
+        return context
+
+    # Статистика
+    class PubsStat(Page):
+        def get_context(self, request):
+            #pubs = Pubs.objects.filter(locale=Locale.get_active())
+            pubs = Topics.objects.annotate(
+                topic_sum=Sum('pubs__pubs_count', filter=Q(pubs__locale=Locale.get_active()))
+            ).order_by('topic_name_ru')
+            print(pubs)
+            # Список годов сгруппированных с указанием количества публикаций
+            datelist = Pubs.objects.filter(locale=Locale.get_active()).order_by('pubs_god').values('pubs_god').annotate(
+                total_count=Count('pubs_god'))
+
+
+            # Пагинация
+            paginator = Paginator(pubs, 50)
+            # Try to get the ?page=x value
+            page = request.GET.get("page")
+            try:
+                # If the page exists and the ?page=x is an int
+                posts = paginator.page(page)
+            except PageNotAnInteger:
+                # If the ?page=x is not an int; show the first page
+                posts = paginator.page(1)
+            except EmptyPage:
+                # If the ?page=x is out of range (too high most likely)
+                # Then return the last page
+                posts = paginator.page(paginator.num_pages)
+
+            # Update template context
+            context = super().get_context(request)
+            context['datelist'] = datelist
+            context['pubs'] = posts
+            print('заголовок - ')
+            return context
+

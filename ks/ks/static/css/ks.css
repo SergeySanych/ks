@@ -227,6 +227,16 @@ h5 {
 .whitetext {
     color: #fafafa;
 }
+.darkbluetext {
+    color: #2165AD;
+}
+
+.bluehr {
+    margin: 10px 0 10px 0;
+    border-top: 1px solid #2165AD;
+}
+
+
 .margin-top-60 {
     margin-top: 60px !important;
 }
@@ -238,6 +248,10 @@ h5 {
 
 .height-60 {
     height: 60px;
+}
+
+.padding-mini {
+    padding: 5px;
 }
 
 /* Ширина текста в канвас для родителя */
@@ -312,7 +326,7 @@ h5 {
 }
 
 /* OnClick + Active */
-.icon-button:active,
+.icon-button:active
 {
     background-color: #dfdfdf;
     color: #666;
