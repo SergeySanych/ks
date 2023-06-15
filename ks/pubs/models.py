@@ -17,7 +17,7 @@ from wagtail.snippets.edit_handlers import SnippetChooserPanel
 # Публикации основной класс
 from home.models import Authors
 from home.models import Topics
-
+from home.models import Avtors
 
 class Pubs(Page):
     localize_default_translation_mode = "simple"
@@ -32,10 +32,13 @@ class Pubs(Page):
     # Поля категорий и фильтров
     pubs_god = models.IntegerField("Год выхода публикации")
     pubs_author = ParentalManyToManyField('home.Authors', blank=True)
+    pubs_avtor = ParentalManyToManyField('home.Avtors', blank=True)
     pubs_topics = ParentalManyToManyField('home.Topics', blank=True)
     pubs_components = ParentalManyToManyField('home.Components', blank=True)
     pubs_countries = ParentalManyToManyField('home.Countries', blank=True)
     pubs_count = models.IntegerField(verbose_name='Всего просмотров публикации', default=0)
+    pubs_ist = models.CharField(verbose_name="Источник", max_length=250, blank=True)
+    pubs_ist_url = models.CharField(verbose_name="Ссылка на источник", max_length=250, blank=True)
 
     # Поля для расширенного контента
     pubs_vitrina = models.BooleanField(verbose_name="Показывать витрину", default=False)
@@ -102,8 +105,8 @@ class Pubs(Page):
         index.SearchField('pubs_description', partial_match=True),
         index.SearchField('pubs_body', partial_match=True),
         index.SearchField('pubs_body_bottom', partial_match=True),
+        index.SearchField('pubs_avtor', partial_match=True),
         index.FilterField('pubs_god'),
-        index.FilterField('pubs_author'),
         index.FilterField('pubs_topics'),
         index.FilterField('pubs_components'),
         index.FilterField('pubs_countries'),
@@ -115,6 +118,8 @@ class Pubs(Page):
                 FieldPanel('pubs_header', heading='Полное название - показывается на странице, заголовок в меню'),
                 FieldPanel('pubs_photo', heading='Титульный лист публикации'),
                 FieldPanel('pubs_god', heading='Год выхода публикации'),
+                FieldPanel('pubs_ist', heading='Источник'),
+                FieldPanel('pubs_ist_url', heading='Ссылка на Источник, если есть ссылка добавиться к тексту источника'),
                 InlinePanel('pubs_documents', label="Список документов"),
                 FieldPanel('pubs_intro', heading='Короткое описание - показывается в результатах поиска'),
                 FieldPanel('pubs_description', heading='Полное описание - показывается на странице публикации'),
@@ -123,7 +128,13 @@ class Pubs(Page):
         ),
         MultiFieldPanel(
             [
-                FieldPanel('pubs_author', heading='Авторы публикации'),
+                FieldRowPanel(
+                    [
+                        FieldPanel('pubs_author', heading='Авторы публикации'),
+                        FieldPanel('pubs_avtor', heading='Авторы публикации'),
+                    ],
+                ),
+
                 FieldPanel('pubs_topics', heading='Темы'),
                 FieldPanel('pubs_components', heading='Разделы'),
                 FieldPanel('pubs_countries', heading='Страны'),
@@ -308,7 +319,7 @@ class PubsAuthors(Page):
         # Filter by cat
         letter = request.GET.get('letter')
         if letter:
-            authors = Authors.objects.filter(authors_full_name__istartswith=letter)
+            authors = Avtors.objects.filter(avtor_full_name__istartswith=letter)
             if authors:
                 if self.locale.language_code == "en":
                     filter_header = 'Authors'
@@ -317,14 +328,15 @@ class PubsAuthors(Page):
             else:
                 filter_header = 'Publications not found'
         else:
-            authors = Authors.objects.all()
+            authors = Avtors.objects.all()
             if self.locale.language_code == "en":
                 filter_header = 'Authors'
             else:
                 filter_header = 'Авторы'
 
-        authors = authors.filter(locale=Locale.get_active())
-        authors = authors.order_by('authors_full_name')
+        #authors = authors.filter(locale=Locale.get_active())
+        authors = authors.order_by('avtor_full_name')
+        print(authors)
 
         # Пагинация
         paginator = Paginator(authors, 10)

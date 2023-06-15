@@ -70,6 +70,32 @@ class Countries(models.Model):
     class Meta:
         verbose_name_plural = 'Страны'
 
+@register_snippet
+class Avtors(models.Model):
+    avtor_full_name = models.CharField(max_length=250, verbose_name="Имя автора")
+    avtor_photo = models.ForeignKey(
+        'wagtailimages.Image', null=True, blank=True,
+        on_delete=models.SET_NULL, related_name='+'
+    )
+    avtor_discription = RichTextField(blank=True, verbose_name="Об авторе")
+
+    search_fields = Page.search_fields + [
+        index.SearchField('avtor_full_name'),
+        index.SearchField('avtor_discription'),
+    ]
+
+    content_panels = Page.content_panels + [
+        FieldPanel('avtor_full_name', heading='Вначале Фамилия, потом Имя или Инициалы'),
+        FieldPanel('avtor_discription'),
+        FieldPanel('avtor_photo'),
+    ]
+
+    def __str__(self):
+        return self.avtor_full_name
+
+    class Meta:
+        verbose_name = "Об авторе"
+
 
 class Authors(Page):
     authors_full_name = models.CharField(max_length=250, verbose_name="Имя автора")
@@ -85,7 +111,7 @@ class Authors(Page):
     ]
 
     content_panels = Page.content_panels + [
-        FieldPanel('authors_full_name'),
+        FieldPanel('authors_full_name', heading='Вначале Фамилия, потом Имя или Инициалы'),
         FieldPanel('authors_discription'),
         FieldPanel('authors_photo'),
     ]
@@ -143,11 +169,13 @@ class NewPubList(Orderable):
 class HomePage(Page):
     # Поля категорий и фильтров
     main_author = ParentalManyToManyField('home.Authors', blank=True)
+    main_avtor = ParentalManyToManyField('home.Avtors', blank=True)
 
     content_panels = Page.content_panels + [
         MultiFieldPanel(
             [
                 FieldPanel('main_author', heading='Популярные авторы'),
+                FieldPanel('main_avtor', heading='Популярные авторы 2'),
                 InlinePanel('bestpub_list', label="Популярные публикации"),
                 InlinePanel('newpub_list', label="Новые публикации"),
             ],

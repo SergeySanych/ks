@@ -30,14 +30,23 @@
                     {% endfor %}
                 </p>
                 <p class="pubs_category"><span>Авторы: </span>
-                    {% for author in page.pubs_author.all %}
-                        {{ author.authors_full_name }}{% if author.pk != page.pubs_author.last.pk  %}, {% endif %}
+                    {% for author in page.pubs_avtor.all %}
+                        {{ author.avtor_full_name }}{% if author.pk != page.pubs_avtor.last.pk  %}, {% endif %}
                     {% endfor %}
                 </p>
                 <p class="pubs_category"><span>Страны: </span>
                     {% for country in page.pubs_countries.all %}
                         {{ country.country_name_ru }}{% if country.pk != page.pubs_countries.last.pk  %}, {% endif %}
                     {% endfor %}
+                </p>
+                <p class="pubs_category"><span>Источник: </span>
+                    {% if pub.pubs_ist_url %}
+                        <a  href="{{ pub.pubs_ist_url }}">
+                            {{ pub.pubs_ist }}
+                        </a>
+                    {% else %}
+                        {{ pub.pubs_ist }}
+                    {% endif %}
                 </p>
 
                 <div>{{ page.pubs_intro | richtext }}</div>
