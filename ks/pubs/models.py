@@ -31,7 +31,7 @@ class Pubs(Page):
     )
     # Поля категорий и фильтров
     pubs_god = models.IntegerField("Год выхода публикации")
-    pubs_author = ParentalManyToManyField('home.Authors', blank=True)
+    pubs_author = ParentalManyToManyField('home.Authors', blank=True) #Не используется
     pubs_avtor = ParentalManyToManyField('home.Avtors', blank=True)
     pubs_topics = ParentalManyToManyField('home.Topics', blank=True)
     pubs_components = ParentalManyToManyField('home.Components', blank=True)
@@ -128,13 +128,7 @@ class Pubs(Page):
         ),
         MultiFieldPanel(
             [
-                FieldRowPanel(
-                    [
-                        FieldPanel('pubs_author', heading='Авторы публикации'),
-                        FieldPanel('pubs_avtor', heading='Авторы публикации'),
-                    ],
-                ),
-
+                FieldPanel('pubs_avtor', heading='Авторы публикации'),
                 FieldPanel('pubs_topics', heading='Темы'),
                 FieldPanel('pubs_components', heading='Разделы'),
                 FieldPanel('pubs_countries', heading='Страны'),

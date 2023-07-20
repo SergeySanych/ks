@@ -174,8 +174,7 @@ class HomePage(Page):
     content_panels = Page.content_panels + [
         MultiFieldPanel(
             [
-                FieldPanel('main_author', heading='Популярные авторы'),
-                FieldPanel('main_avtor', heading='Популярные авторы 2'),
+                FieldPanel('main_avtor', heading='Популярные авторы'),
                 InlinePanel('bestpub_list', label="Популярные публикации"),
                 InlinePanel('newpub_list', label="Новые публикации"),
             ],
