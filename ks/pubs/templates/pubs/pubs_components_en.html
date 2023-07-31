@@ -1,11 +1,11 @@
-{% extends "internalbase.html" %}
+{% extends "internalbase_en.html" %}
 
 {% load wagtailcore_tags wagtailimages_tags i18n %}
 
 {% get_current_language as LANGUAGE_CODE %}
 
 {% block lcolumn %}
-{% include "filtermenu.html" %}
+{% include "filtermenu_en.html" %}
 {% endblock %}
 
 {% block rcolumn %}
@@ -13,7 +13,7 @@
 <h3>{{ filter_header }}</h3>
     {% for pub in pubs %}
         {% with pub=pub.specific %}
-            {% include "pubs/pubslist.html" %}
+            {% include "pubs/pubslist_en.html" %}
         {% endwith %}
     {% endfor %}
 

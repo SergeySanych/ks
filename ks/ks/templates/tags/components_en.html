@@ -1,0 +1,8 @@
+{% for component in components %}
+    <li>
+        <a href="/ru/components/?comp={{ component.component_name_ru }}"><span
+                class="fs14 widthcanvastext">{{ component.component_name_en }}</span></a>
+    </li>
+    <li class="uk-nav-divider"></li>
+
+{% endfor %}

@@ -41,10 +41,12 @@ class Topics(models.Model):
 class Components(models.Model):
     component_name_ru = models.CharField(max_length=255, verbose_name="Название раздела на русском")
     component_name_en = models.CharField(max_length=255, verbose_name="Название раздела на английском")
+    component_icon = models.CharField(max_length=255, verbose_name="Название иконки из библиотеки гугл", null=True, blank=True)
 
     panels = [
         FieldPanel('component_name_ru'),
         FieldPanel('component_name_en'),
+        FieldPanel('component_icon', heading='Название иконки из библиотеки гугл'),
     ]
 
     def __str__(self):
@@ -182,6 +184,11 @@ class HomePage(Page):
         ),
     ]
 
+    class Meta:
+        verbose_name = "Главная страница"
 
-class Meta:
-    verbose_name = "Главная страница"
+    #Фунция выбирает англйиский или русский шаблон грузить
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'home/home_page_en.html'
+        return 'home/home_page.html'

@@ -1,0 +1,8 @@
+{% for country in countries %}
+    <li>
+        <a href="/ru/countries/?country={{ country.country_name_ru }}"><span
+                class="fs14 widthcanvastext">{{ country.country_name_ru }}</span></a>
+    </li>
+    <li class="uk-nav-divider"></li>
+
+{% endfor %}

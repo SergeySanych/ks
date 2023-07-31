@@ -12,9 +12,7 @@
 <h3>{{ filter_header }}</h3>
     {% for pub in pubs %}
         {% with pub=pub.specific %}
-          {% if pub.locale|lower|striptags == LANGUAGE_CODE|language_name|lower|striptags %}
-                {% include "pubs/pubslist.html" %}
-          {% endif %}
+            {% include "pubs/pubslist.html" %}
         {% endwith %}
     {% endfor %}
 

@@ -1,0 +1,89 @@
+{% extends "internalbase_en.html" %}
+
+{% load wagtailcore_tags wagtailimages_tags i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+{% block lcolumn %}
+{% include "filtermenu_en.html" %}
+{% endblock %}
+
+{% block rcolumn %}
+<h3>{{ filter_header }}</h3>
+<ul uk-accordion="multiple: true">
+    <li>
+    <a class="uk-accordion-title" href="#"><h5 class="uk-margin-remove-bottom">Filter by years</h5></a>
+    <div class="uk-accordion-content">
+        <div class="padding-mini">
+            {% for god in datelist %}
+            <span><b><a href="?date={{ god.pubs_god }}">{{ god.pubs_god }}<span class="darkbluetext">({{ god.total_count }})</span></a> </b></span>
+            {% endfor %}
+        </div>
+    </div>
+    <hr class="bluehr marginleft-20">
+    </li>
+
+
+{% regroup pubs by pubs_god as pubs_by_god %}
+
+{% for god in pubs_by_god %}
+    <li>
+    <a class="uk-accordion-title" href="#"><h4 class="uk-margin-remove-bottom" >{{ god.grouper }}</h4></a>
+    <div class="uk-accordion-content">
+        {% for pub in god.list %}
+        {% with pub=pub.specific %}
+            <!--Условие отвечает за открытие и закрытие тегов года-->
+                    <!--Общая информация о публикации-->
+            {% if pub.locale|lower|striptags == LANGUAGE_CODE|language_name|lower|striptags %}
+                {% include "pubs/pubslist_en.html" %}
+            {% endif %}
+        {% endwith %}
+        {% endfor %}
+    </div>
+    </li>
+{% endfor %}
+</ul>
+
+
+{% if pubs.paginator.num_pages > 1 %}
+<div class="pagination">
+    {% if filter %}
+        <span class="page-item">
+        {% if pubs.has_previous %}
+            <a href="?date={{ filter }}&page={{ pubs.previous_page_number }}" class="page-spannk">
+                <span>&laquo; </span>
+            </a>
+        {% endif %}
+        </span>
+            {% for page_num in pubs.paginator.page_range %}
+            <span class="page-item {% if page_num == pubs.number %} active{% endif %}">
+            <a href="?date={{ filter }}&page={{ page_num }}" class="page-spannk"> {{ page_num }}</a>
+            </span>
+        {% endfor %}
+        {% if pubs.has_next %}
+            <span class="page-item">
+            <a href="?date={{ filter }}&page={{ pubs.next_page_number }}" class="page-link"><span>&raquo;</span></a>
+            </span>
+        {% endif %}
+    {% else %}
+        <span class="page-item">
+        {% if pubs.has_previous %}
+            <a href="?page={{ pubs.previous_page_number }}" class="page-spannk">
+                <span>&laquo; </span>
+            </a>
+        {% endif %}
+        </span>
+        {% for page_num in pubs.paginator.page_range %}
+            <span class="page-item {% if page_num == pubs.number %} active{% endif %}">
+            <a href="?page={{ page_num }}" class="page-spannk"> {{ page_num }}</a>
+            </span>
+        {% endfor %}
+        {% if pubs.has_next %}
+            <span class="page-item">
+            <a href="?page={{ pubs.next_page_number }}" class="page-link"><span>&raquo;</span></a>
+            </span>
+        {% endif %}
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

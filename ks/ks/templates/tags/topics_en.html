@@ -1,0 +1,8 @@
+{% for topic in topics %}
+    <li>
+        <a href="/en/topics/?topic={{ topic.topic_name_ru }}"><span
+                class="fs14 widthcanvastext">{{ topic.topic_name_en }}</span></a>
+    </li>
+    <li class="uk-nav-divider"></li>
+
+{% endfor %}

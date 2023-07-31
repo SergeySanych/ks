@@ -1,50 +1,49 @@
 {% load wagtailimages_tags topics_tag %}
 
-
-
 <div class="uk-padding-small">
     <ul uk-nav>
         <li class="uk-parent{% if filter == 'comp'  %} uk-open{% endif %}">
-            <a href="{{ item.href }}">Разделы<span uk-navbar-parent-icon></span></a>
+            <a href="{{ item.href }}">Collections<span uk-navbar-parent-icon></span></a>
     <!--    Подменю-->
 
 
                 <ul uk-nav class="uk-nav-sub">
-                    {% components %}
+                    {% components_en %}
+
                 </ul>
 
         </li>
         <li class="uk-parent{% if filter == 'topic'  %} uk-open{% endif %}">
-            <a href="{{ item.href }}">Темы<span uk-navbar-parent-icon></span></a>
+            <a href="{{ item.href }}">Topics<span uk-navbar-parent-icon></span></a>
             <!--    Подменю-->
 
 
             <ul uk-nav class="uk-nav-sub">
-                {% topics %}
+                {% topics_en %}
+
             </ul>
 
         </li>
         <li class="uk-parent{% if filter == 'country'  %} uk-open{% endif %}">
-            <a href="#">Страны<span uk-navbar-parent-icon></span></a>
+            <a href="#">Countries<span uk-navbar-parent-icon></span></a>
             <!--    Подменю-->
 
 
             <ul uk-nav class="uk-nav-sub">
-
-                {% countries %}
+                {% countries_en %}
 
             </ul>
 
         </li>        
         <li class="">
-            <a href="/ru/avtory-i-publikacii/">Авторы</a>
+            <a href="/en/avtory-i-publikacii/">Authors</a>
         </li>
         <li class="">
-            <a href="/ru/publikacii-po-godam/">По годам</a>
+            <a href="/en/publikacii-po-godam/">On years</a>
         </li>
 
         <li class="">
-            <a href="/ru/analitics/">Статистика</a>
+            <a href="/en/analitics/">Statistics</a>
         </li>
     </ul>
 </div>

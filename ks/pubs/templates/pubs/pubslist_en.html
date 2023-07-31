@@ -1,0 +1,59 @@
+{% load wagtailcore_tags wagtailimages_tags i18n %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+    <!--Общая информация о публикации-->
+            <div uk-grid>
+                <div class="uk-width-1-1" uk-grid>
+
+                    <div class="uk-width-1-1 uk-width-1-4@s uk-flex uk-flex-center uk-padding-small">
+                        <div>
+                            <a  href="{% pageurl pub %}">
+                                {% image pub.pubs_photo fill-425x600 class="uk-cover shadow10" %}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-1 uk-width-3-4@s">
+                        <div>
+                            <a  href="{% pageurl pub %}">
+                                <h5>{{ pub.pubs_header }}</h5>
+                            </a>
+                            <p class="pubs_category"><span>Year:</span> {{ pub.pubs_god }}</p>
+                            <p class="pubs_category"><span>Collections: </span>
+                                {% for component in pub.pubs_components.all %}
+                                    {{ component.component_name_en }}{% if component.pk != pub.pubs_components.last.pk  %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="pubs_category"><span>Topics: </span>
+                                {% for topic in pub.pubs_topics.all %}
+                                    {{ topic.topic_name_en }}{% if topic.pk != pub.pubs_topics.last.pk  %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="pubs_category"><span>Authors: </span>
+                                {% for author in pub.pubs_avtor.all %}
+                                        {{ author.avtor_full_name }}{% if author.pk != pub.pubs_avtor.last.pk  %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="pubs_category"><span>Countries: </span>
+                                {% for country in pub.pubs_countries.all %}
+                                    {{ country.country_name_en }}{% if country.pk != pub.pubs_countries.last.pk  %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="pubs_category"><span>Source: </span>
+                                {% if pub.pubs_ist_url %}
+                                    <a  href="{{ pub.pubs_ist_url }}">
+                                        {{ pub.pubs_ist }}
+                                    </a>
+                                {% else %}
+                                    {{ pub.pubs_ist }}
+                                {% endif %}
+                            </p>
+                            <div>{{ pub.pubs_intro | richtext }}</div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="marginleft-20">

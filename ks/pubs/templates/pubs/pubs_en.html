@@ -2,7 +2,7 @@
 
 {% load wagtailcore_tags wagtailimages_tags %}
 {% block lcolumn %}
-{% include "filtermenu.html" %}
+{% include "filtermenu_en.html" %}
 {% endblock %}
 
 {% block rcolumn %}
@@ -18,28 +18,28 @@
         <div class="uk-width-1-1 uk-width-1-2@s">
             <div>
                 <h3>{{ page.pubs_header }}</h3>
-                <p class="pubs_category"><span>Год:</span> {{ page.pubs_god }}</p>
-                <p class="pubs_category"><span>Разделы: </span>
+                <p class="pubs_category"><span>Year:</span> {{ page.pubs_god }}</p>
+                <p class="pubs_category"><span>Collections: </span>
                     {% for component in page.pubs_components.all %}
-                        {{ component.component_name_ru }}{% if component.pk != page.pubs_components.last.pk  %}, {% endif %}
+                        {{ component.component_name_en }}{% if component.pk != page.pubs_components.last.pk  %}, {% endif %}
                     {% endfor %}
                 </p>
-                <p class="pubs_category"><span>Темы: </span>
+                <p class="pubs_category"><span>Topics: </span>
                     {% for topic in page.pubs_topics.all %}
-                        {{ topic.topic_name_ru }}{% if topic.pk != page.pubs_topics.last.pk  %}, {% endif %}
+                        {{ topic.topic_name_en }}{% if topic.pk != page.pubs_topics.last.pk  %}, {% endif %}
                     {% endfor %}
                 </p>
-                <p class="pubs_category"><span>Авторы: </span>
+                <p class="pubs_category"><span>Authors: </span>
                     {% for author in page.pubs_avtor.all %}
                         {{ author.avtor_full_name }}{% if author.pk != page.pubs_avtor.last.pk  %}, {% endif %}
                     {% endfor %}
                 </p>
-                <p class="pubs_category"><span>Страны: </span>
+                <p class="pubs_category"><span>Countries: </span>
                     {% for country in page.pubs_countries.all %}
-                        {{ country.country_name_ru }}{% if country.pk != page.pubs_countries.last.pk  %}, {% endif %}
+                        {{ country.country_name_en }}{% if country.pk != page.pubs_countries.last.pk  %}, {% endif %}
                     {% endfor %}
                 </p>
-                <p class="pubs_category"><span>Источник: </span>
+                <p class="pubs_category"><span>Source: </span>
                     {% if pub.pubs_ist_url %}
                         <a  href="{{ pub.pubs_ist_url }}">
                             {{ pub.pubs_ist }}
@@ -51,7 +51,7 @@
 
                 <div>{{ page.pubs_intro | richtext }}</div>
 
-                <p class="pubs_category">Файлы для скачивания:</p>
+                <p class="pubs_category">Downloads:</p>
                 <ul class="">
                     {% for item in page.pubs_documents.all %}
                     <li>

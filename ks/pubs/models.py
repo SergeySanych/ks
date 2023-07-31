@@ -96,8 +96,13 @@ class Pubs(Page):
 
         childrenpages = self.get_children().all().live().order_by('first_published_at')
         context['childrenpages'] = childrenpages
-
         return context
+
+    # Фунция выбирает англйиский или русский шаблон грузить
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'pubs/pubs_en.html'
+        return 'pubs/pubs.html'
 
     search_fields = Page.search_fields + [
         index.SearchField('pubs_header', partial_match=True),
@@ -128,12 +133,23 @@ class Pubs(Page):
         ),
         MultiFieldPanel(
             [
-                FieldPanel('pubs_avtor', heading='Авторы публикации'),
-                FieldPanel('pubs_topics', heading='Темы'),
-                FieldPanel('pubs_components', heading='Разделы'),
-                FieldPanel('pubs_countries', heading='Страны'),
+                # FieldPanel('pubs_avtor', heading='Авторы публикации'),
+                FieldRowPanel(
+                    [
+                        FieldPanel('pubs_topics', heading='Темы', widget=forms.CheckboxSelectMultiple),
+                        FieldPanel('pubs_components', heading='Разделы', widget=forms.CheckboxSelectMultiple),
+                    ],
+                ),
+                FieldPanel('pubs_countries', heading='Страны', widget=forms.CheckboxSelectMultiple),
             ],
             heading="Информация о связанных страницах",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel('pubs_avtor', widget=forms.CheckboxSelectMultiple),
+            ],
+            heading="Информация об авторах",
+            classname="collapsed",
         ),
         MultiFieldPanel(
             [
@@ -166,12 +182,18 @@ class PubDocuments(Orderable):
 
 # Публикации по разделам
 class PubsComponents(Page):
+    # Фунция выбирает англйиский или русский шаблон грузить
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'pubs/pubs_components_en.html'
+        return 'pubs/pubs_components.html'
 
     def get_context(self, request):
         # Filter by cat
         comp = request.GET.get('comp')
         if comp:
             pubs = Pubs.objects.filter(pubs_components__component_name_ru=comp)
+            pubs = pubs.filter(locale=Locale.get_active())
             if pubs:
                 pubs_comp = pubs.first().pubs_components.filter(component_name_ru=comp)
                 if self.locale.language_code == "en":
@@ -181,7 +203,7 @@ class PubsComponents(Page):
             else:
                 filter_header = 'Publications not found'
         else:
-            pubs = Pubs.objects.all()
+            pubs = Pubs.objects.all().filter(locale=Locale.get_active())
             if self.locale.language_code == "en":
                 filter_header = 'All publications'
             else:
@@ -215,11 +237,17 @@ class PubsComponents(Page):
 
 # Публикации по темам
 class PubsTopics(Page):
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'pubs/pubs_topics_en.html'
+        return 'pubs/pubs_topics.html'
+
     def get_context(self, request):
         # Filter by cat
         topic = request.GET.get('topic')
         if topic:
             pubs = Pubs.objects.filter(pubs_topics__topic_name_ru=topic)
+            pubs = pubs.filter(locale=Locale.get_active())
             if pubs:
                 pubs_topic = pubs.first().pubs_topics.filter(topic_name_ru=topic)
                 if self.locale.language_code == "en":
@@ -229,7 +257,7 @@ class PubsTopics(Page):
             else:
                 filter_header = 'Publications not found'
         else:
-            pubs = Pubs.objects.all()
+            pubs = Pubs.objects.all().filter(locale=Locale.get_active())
             if self.locale.language_code == "en":
                 filter_header = 'All publications'
             else:
@@ -262,11 +290,17 @@ class PubsTopics(Page):
 
 # Публикации по странам
 class PubsCountries(Page):
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'pubs/pubs_countries_en.html'
+        return 'pubs/pubs_countries.html'
+
     def get_context(self, request):
         # Filter by cat
         country = request.GET.get('country')
         if country:
             pubs = Pubs.objects.filter(pubs_countries__country_name_ru=country)
+            pubs = pubs.filter(locale=Locale.get_active())
             if pubs:
                 pubs_country = pubs.first().pubs_countries.filter(country_name_ru=country)
                 if self.locale.language_code == "en":
@@ -276,7 +310,7 @@ class PubsCountries(Page):
             else:
                 filter_header = 'Publications not found'
         else:
-            pubs = Pubs.objects.all()
+            pubs = Pubs.objects.all().filter(locale=Locale.get_active())
             if self.locale.language_code == "en":
                 filter_header = 'All publications'
             else:
@@ -309,6 +343,11 @@ class PubsCountries(Page):
 
 # Публикации по авторам
 class PubsAuthors(Page):
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'pubs/pubs_authors_en.html'
+        return 'pubs/pubs_authors.html'
+
     def get_context(self, request):
         # Filter by cat
         letter = request.GET.get('letter')
@@ -330,7 +369,6 @@ class PubsAuthors(Page):
 
         #authors = authors.filter(locale=Locale.get_active())
         authors = authors.order_by('avtor_full_name')
-        print(authors)
 
         # Пагинация
         paginator = Paginator(authors, 10)
@@ -365,13 +403,16 @@ class PubsAuthors(Page):
 
 #Публикации по годам
 class PubsDate(Page):
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'pubs/pubs_date_en.html'
+        return 'pubs/pubs_date.html'
+
     def get_context(self, request):
         # Filter by cat
         date = request.GET.get('date')
         if date:
             pubs = Pubs.objects.filter(pubs_god=date)
-            print(date)
-            print(pubs)
             if pubs:
                 filter_header = date
             else:
@@ -388,7 +429,7 @@ class PubsDate(Page):
         pubs = pubs.order_by('-pubs_god').filter(locale=Locale.get_active())
 
         # Пагинация
-        paginator = Paginator(pubs, 5)
+        paginator = Paginator(pubs, 10)
         # Try to get the ?page=x value
         page = request.GET.get("page")
         try:
@@ -414,6 +455,11 @@ class PubsDate(Page):
 
     # Статистика
     class PubsStat(Page):
+        def get_template(self, request, *args, **kwargs):
+            if self.locale.language_code == "en":
+                return 'pubs/pubs_stat_en.html'
+            return 'pubs/pubs_stat.html'
+
         def get_context(self, request):
             #pubs = Pubs.objects.filter(locale=Locale.get_active())
             pubs = Topics.objects.annotate(
