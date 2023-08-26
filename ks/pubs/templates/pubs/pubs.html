@@ -40,12 +40,12 @@
                     {% endfor %}
                 </p>
                 <p class="pubs_category"><span>Источник: </span>
-                    {% if pub.pubs_ist_url %}
-                        <a  href="{{ pub.pubs_ist_url }}">
-                            {{ pub.pubs_ist }}
+                    {% if page.pubs_ist_url %}
+                        <a  href="{{ page.pubs_ist_url }}">
+                            {{ page.pubs_ist }}
                         </a>
                     {% else %}
-                        {{ pub.pubs_ist }}
+                        {{ page.pubs_ist }}
                     {% endif %}
                 </p>
 

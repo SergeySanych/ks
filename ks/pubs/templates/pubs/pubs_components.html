@@ -1,6 +1,6 @@
 {% extends "internalbase.html" %}
 
-{% load wagtailcore_tags wagtailimages_tags i18n %}
+{% load wagtailcore_tags wagtailimages_tags i18n topics_tag %}
 
 {% get_current_language as LANGUAGE_CODE %}
 
@@ -11,6 +11,7 @@
 {% block rcolumn %}
 
 <h3>{{ filter_header }}</h3>
+{% components %}
     {% for pub in pubs %}
         {% with pub=pub.specific %}
             {% include "pubs/pubslist.html" %}

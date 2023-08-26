@@ -13,11 +13,11 @@ from string import ascii_uppercase
 from wagtail.snippets.models import register_snippet
 from wagtail.snippets.edit_handlers import SnippetChooserPanel
 
-
 # Публикации основной класс
 from home.models import Authors
 from home.models import Topics
 from home.models import Avtors
+
 
 class Pubs(Page):
     localize_default_translation_mode = "simple"
@@ -31,7 +31,7 @@ class Pubs(Page):
     )
     # Поля категорий и фильтров
     pubs_god = models.IntegerField("Год выхода публикации")
-    pubs_author = ParentalManyToManyField('home.Authors', blank=True) #Не используется
+    pubs_author = ParentalManyToManyField('home.Authors', blank=True)  # Не используется
     pubs_avtor = ParentalManyToManyField('home.Avtors', blank=True)
     pubs_topics = ParentalManyToManyField('home.Topics', blank=True)
     pubs_components = ParentalManyToManyField('home.Components', blank=True)
@@ -106,10 +106,6 @@ class Pubs(Page):
 
     search_fields = Page.search_fields + [
         index.SearchField('pubs_header', partial_match=True),
-        index.SearchField('pubs_intro', partial_match=True),
-        index.SearchField('pubs_description', partial_match=True),
-        index.SearchField('pubs_body', partial_match=True),
-        index.SearchField('pubs_body_bottom', partial_match=True),
         index.SearchField('pubs_avtor', partial_match=True),
         index.FilterField('pubs_god'),
         index.FilterField('pubs_topics'),
@@ -124,7 +120,8 @@ class Pubs(Page):
                 FieldPanel('pubs_photo', heading='Титульный лист публикации'),
                 FieldPanel('pubs_god', heading='Год выхода публикации'),
                 FieldPanel('pubs_ist', heading='Источник'),
-                FieldPanel('pubs_ist_url', heading='Ссылка на Источник, если есть ссылка добавиться к тексту источника'),
+                FieldPanel('pubs_ist_url',
+                           heading='Ссылка на Источник, если есть ссылка добавиться к тексту источника'),
                 InlinePanel('pubs_documents', label="Список документов"),
                 FieldPanel('pubs_intro', heading='Короткое описание - показывается в результатах поиска'),
                 FieldPanel('pubs_description', heading='Полное описание - показывается на странице публикации'),
@@ -205,9 +202,9 @@ class PubsComponents(Page):
         else:
             pubs = Pubs.objects.all().filter(locale=Locale.get_active())
             if self.locale.language_code == "en":
-                filter_header = 'All publications'
+                filter_header = 'Component: All publications'
             else:
-                filter_header = 'Все публикации'
+                filter_header = 'Раздел: Все публикации'
 
         # Пагинация
         paginator = Paginator(pubs, 5)
@@ -227,7 +224,7 @@ class PubsComponents(Page):
         # Update template context
         context = super().get_context(request)
         context['pubs'] = posts
-        #context["posts"] = posts
+        # context["posts"] = posts
         context['filter'] = comp
         print('заголовок - ')
         print(filter_header)
@@ -259,9 +256,9 @@ class PubsTopics(Page):
         else:
             pubs = Pubs.objects.all().filter(locale=Locale.get_active())
             if self.locale.language_code == "en":
-                filter_header = 'All publications'
+                filter_header = 'Topic: All publications'
             else:
-                filter_header = 'Все публикации'
+                filter_header = 'Тема: Все публикации'
 
         # Пагинация
         paginator = Paginator(pubs, 5)
@@ -312,9 +309,9 @@ class PubsCountries(Page):
         else:
             pubs = Pubs.objects.all().filter(locale=Locale.get_active())
             if self.locale.language_code == "en":
-                filter_header = 'All publications'
+                filter_header = 'Country: All publications'
             else:
-                filter_header = 'Все публикации'
+                filter_header = 'Страна: Все публикации'
 
         # Пагинация
         paginator = Paginator(pubs, 5)
@@ -367,7 +364,7 @@ class PubsAuthors(Page):
             else:
                 filter_header = 'Авторы'
 
-        #authors = authors.filter(locale=Locale.get_active())
+        # authors = authors.filter(locale=Locale.get_active())
         authors = authors.order_by('avtor_full_name')
 
         # Пагинация
@@ -387,13 +384,13 @@ class PubsAuthors(Page):
 
         pubs = Pubs.objects.all()
 
-
         # Update template context
         context = super().get_context(request)
         context['pubs'] = pubs.filter(locale=Locale.get_active())
         context["authors"] = posts
         context['alphabet'] = list(ascii_uppercase)
-        context['alphabet_ru'] = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ы', 'Э', 'Ю', 'Я']
+        context['alphabet_ru'] = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П',
+                                  'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ы', 'Э', 'Ю', 'Я']
         context['filter'] = letter
         print('заголовок - ')
         print(filter_header)
@@ -401,7 +398,7 @@ class PubsAuthors(Page):
         return context
 
 
-#Публикации по годам
+# Публикации по годам
 class PubsDate(Page):
     def get_template(self, request, *args, **kwargs):
         if self.locale.language_code == "en":
@@ -425,11 +422,12 @@ class PubsDate(Page):
                 filter_header = 'Все публикации по годам'
 
         # Список годов сгруппированных с указанием количества публикаций
-        datelist = Pubs.objects.filter(locale=Locale.get_active()).order_by('pubs_god').values('pubs_god').annotate(total_count=Count('pubs_god'))
+        datelist = Pubs.objects.filter(locale=Locale.get_active()).order_by('pubs_god').values('pubs_god').annotate(
+            total_count=Count('pubs_god'))
         pubs = pubs.order_by('-pubs_god').filter(locale=Locale.get_active())
 
         # Пагинация
-        paginator = Paginator(pubs, 10)
+        paginator = Paginator(pubs, 30)
         # Try to get the ?page=x value
         page = request.GET.get("page")
         try:
@@ -461,7 +459,7 @@ class PubsDate(Page):
             return 'pubs/pubs_stat.html'
 
         def get_context(self, request):
-            #pubs = Pubs.objects.filter(locale=Locale.get_active())
+            # pubs = Pubs.objects.filter(locale=Locale.get_active())
             pubs = Topics.objects.annotate(
                 topic_sum=Sum('pubs__pubs_count', filter=Q(pubs__locale=Locale.get_active()))
             ).order_by('topic_name_ru')
@@ -469,7 +467,6 @@ class PubsDate(Page):
             # Список годов сгруппированных с указанием количества публикаций
             datelist = Pubs.objects.filter(locale=Locale.get_active()).order_by('pubs_god').values('pubs_god').annotate(
                 total_count=Count('pubs_god'))
-
 
             # Пагинация
             paginator = Paginator(pubs, 50)
@@ -492,4 +489,3 @@ class PubsDate(Page):
             context['pubs'] = posts
             print('заголовок - ')
             return context
-
