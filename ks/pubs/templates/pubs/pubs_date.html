@@ -10,26 +10,21 @@
 
 {% block rcolumn %}
 <h3>{{ filter_header }}</h3>
-<ul uk-accordion="multiple: true">
-    <li>
-    <a class="uk-accordion-title" href="#"><h5 class="uk-margin-remove-bottom">Фильтр по годам</h5></a>
-    <div class="uk-accordion-content">
+
         <div class="padding-mini">
+            <span><b><a href="/ru/publikacii-po-godam/">Все</a></b>  </span>
             {% for god in datelist %}
-            <span><b><a href="?date={{ god.pubs_god }}">{{ god.pubs_god }}<span class="darkbluetext">({{ god.total_count }})</span></a> </b></span>
+            <span><b><a href="?date={{ god.pubs_god }}">{{ god.pubs_god }}<span class="darkbluetext">({{ god.total_count }})</span></a></b></span>
             {% endfor %}
         </div>
-    </div>
     <hr class="bluehr marginleft-20">
-    </li>
+
 
 
 {% regroup pubs by pubs_god as pubs_by_god %}
 
 {% for god in pubs_by_god %}
-    <li>
-    <a class="uk-accordion-title" href="#"><h4 class="uk-margin-remove-bottom" >{{ god.grouper }}</h4></a>
-    <div class="uk-accordion-content">
+
         {% for pub in god.list %}
         {% with pub=pub.specific %}
             <!--Условие отвечает за открытие и закрытие тегов года-->
@@ -39,10 +34,9 @@
             {% endif %}
         {% endwith %}
         {% endfor %}
-    </div>
-    </li>
+
 {% endfor %}
-</ul>
+
 
 
 {% if pubs.paginator.num_pages > 1 %}

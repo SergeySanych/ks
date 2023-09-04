@@ -1,0 +1,69 @@
+{% extends "internalbase_en.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block lcolumn %}
+<!-- Left column -->
+{% include "filtermenu_en.html" %}
+{% endblock %}
+
+{% block rcolumn %}
+<!-- Post -->
+<div>
+    <h3>{{ page.menupage_header }}</h3>
+    <div class="uk-position-relative uk-visible-toggle uk-light uk-margin-small-bottom" tabindex="-1" uk-slideshow="ratio: 5:2">
+    {% if page.menupage_slider == False %}
+        {% if page.main_image %}
+        <ul class="uk-slideshow-items">
+            {% for item in page.menupage_gallery_images.all %}
+            <li>
+                {% image item.menupage_image fill-875x350 as tmp_photo %}
+                <img src="{{ tmp_photo.url }}" alt="{{ item.menupage_image_caption }}" uk-cover/>
+            </li>
+            {% endfor %}
+
+        </ul>
+        {% endif %}
+   {% endif %}
+
+        <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#"
+           uk-slidenav-previous
+           uk-slideshow-item="previous"></a>
+        <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next
+           uk-slideshow-item="next"></a>
+
+    </div>
+
+    <div class="intro">{{ page.menupage_intro|richtext }}</div>
+    {% include_block page.menupage_body %}
+
+</div>
+
+
+
+<!-- Childrens -->
+{% if page.menupage_vitrina %}
+<div class="uk-section uk-section-default uk-section-xsmall">
+    <div class="uk-child-width-1-2" uk-grid>
+
+        {% for children in childrenpages %}
+        <div>
+            <div class="uk-inline">
+                {% with children=children.specific %}
+                    {% with children.main_image as main_image %}
+                        {% if main_image %}
+                        {% image main_image fill-500x330 %}
+                        {% endif %}
+                    {% endwith %}
+                <div class="uk-overlay uk-overlay-default uk-position-bottom  uk-flex uk-flex-middle uk-flex-center uk-text-center">
+                    <a class="overlay-link" href="{% pageurl children %}">{{ children.title }}</a>
+                </div>
+                {% endwith %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% include_block page.menupage_body_bottom %}
+
+{% endblock %}

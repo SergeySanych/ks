@@ -194,7 +194,7 @@ class PubsComponents(Page):
             if pubs:
                 pubs_comp = pubs.first().pubs_components.filter(component_name_ru=comp)
                 if self.locale.language_code == "en":
-                    filter_header = 'Component: ' + pubs_comp[0].component_name_en
+                    filter_header = 'Collections: ' + pubs_comp[0].component_name_en
                 else:
                     filter_header = 'Раздел: ' + pubs_comp[0].component_name_ru
             else:
@@ -202,7 +202,7 @@ class PubsComponents(Page):
         else:
             pubs = Pubs.objects.all().filter(locale=Locale.get_active())
             if self.locale.language_code == "en":
-                filter_header = 'Component: All publications'
+                filter_header = 'Collections: All publications'
             else:
                 filter_header = 'Раздел: Все публикации'
 
@@ -411,23 +411,26 @@ class PubsDate(Page):
         if date:
             pubs = Pubs.objects.filter(pubs_god=date)
             if pubs:
-                filter_header = date
+                if self.locale.language_code == "en":
+                    filter_header = 'Year: ' + date
+                else:
+                    filter_header = 'Год: ' + date
             else:
                 filter_header = 'Publications not found'
         else:
             pubs = Pubs.objects.all()
             if self.locale.language_code == "en":
-                filter_header = 'All publications by date'
+                filter_header = 'All publications by Years'
             else:
                 filter_header = 'Все публикации по годам'
 
         # Список годов сгруппированных с указанием количества публикаций
-        datelist = Pubs.objects.filter(locale=Locale.get_active()).order_by('pubs_god').values('pubs_god').annotate(
+        datelist = Pubs.objects.filter(locale=Locale.get_active()).order_by('-pubs_god').values('pubs_god').annotate(
             total_count=Count('pubs_god'))
         pubs = pubs.order_by('-pubs_god').filter(locale=Locale.get_active())
 
         # Пагинация
-        paginator = Paginator(pubs, 30)
+        paginator = Paginator(pubs, 15)
         # Try to get the ?page=x value
         page = request.GET.get("page")
         try:

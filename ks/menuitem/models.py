@@ -71,6 +71,11 @@ class MenuPage(Page):
         else:
             return None
 
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'menuitem/menu_page_en.html'
+        return 'menuitem/menu_page.html'
+
     def get_context(self, request):
         # Update context to include only published posts, ordered by reverse-chron
         context = super().get_context(request)
