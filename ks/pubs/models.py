@@ -36,6 +36,7 @@ class Pubs(Page):
     pubs_topics = ParentalManyToManyField('home.Topics', blank=True)
     pubs_components = ParentalManyToManyField('home.Components', blank=True)
     pubs_countries = ParentalManyToManyField('home.Countries', blank=True)
+    pubs_tags = ParentalManyToManyField('home.Tags', blank=True)
     pubs_count = models.IntegerField(verbose_name='Всего просмотров публикации', default=0)
     pubs_ist = models.CharField(verbose_name="Источник", max_length=250, blank=True)
     pubs_ist_url = models.CharField(verbose_name="Ссылка на источник", max_length=250, blank=True)
@@ -138,6 +139,7 @@ class Pubs(Page):
                     ],
                 ),
                 FieldPanel('pubs_countries', heading='Страны', widget=forms.CheckboxSelectMultiple),
+                FieldPanel('pubs_tags', heading='Теги', widget=forms.CheckboxSelectMultiple),
             ],
             heading="Информация о связанных страницах",
         ),
@@ -492,3 +494,55 @@ class PubsDate(Page):
             context['pubs'] = posts
             print('заголовок - ')
             return context
+
+
+# Публикации по Тегам
+class PubsTags(Page):
+    def get_template(self, request, *args, **kwargs):
+        if self.locale.language_code == "en":
+            return 'pubs/pubs_tags_en.html'
+        return 'pubs/pubs_tags.html'
+
+    def get_context(self, request):
+        # Filter by cat
+        tag = request.GET.get('tag')
+        if tag:
+            pubs = Pubs.objects.filter(pubs_tags__tag_name_ru=tag)
+            pubs = pubs.filter(locale=Locale.get_active())
+            if pubs:
+                pubs_tag = pubs.first().pubs_tags.filter(tag_name_ru=tag)
+                if self.locale.language_code == "en":
+                    filter_header = 'Tag: ' + pubs_tag[0].tag_name_en
+                else:
+                    filter_header = 'Тег: ' + pubs_tag[0].tag_name_ru
+            else:
+                filter_header = 'Publications not found'
+        else:
+            pubs = Pubs.objects.all().filter(locale=Locale.get_active())
+            if self.locale.language_code == "en":
+                filter_header = 'Tags: All publications'
+            else:
+                filter_header = 'Теги: Все публикации'
+
+        # Пагинация
+        paginator = Paginator(pubs, 5)
+        # Try to get the ?page=x value
+        page = request.GET.get("page")
+        try:
+            # If the page exists and the ?page=x is an int
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            # If the ?page=x is not an int; show the first page
+            posts = paginator.page(1)
+        except EmptyPage:
+            # If the ?page=x is out of range (too high most likely)
+            # Then return the last page
+            posts = paginator.page(paginator.num_pages)
+
+        # Update template context
+        context = super().get_context(request)
+        context['pubs'] = posts
+        context['filter'] = tag
+        context['filter_header'] = filter_header
+        return context
+

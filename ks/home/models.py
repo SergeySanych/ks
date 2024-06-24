@@ -73,6 +73,22 @@ class Countries(models.Model):
         verbose_name_plural = 'Страны'
 
 @register_snippet
+class Tags(models.Model):
+    tag_name_ru = models.CharField(max_length=255, verbose_name="Название тега на русском")
+    tag_name_en = models.CharField(max_length=255, verbose_name="Название тега на английском")
+
+    panels = [
+        FieldPanel('tag_name_ru'),
+        FieldPanel('tag_name_en'),
+    ]
+
+    def __str__(self):
+        return self.tag_name_ru
+
+    class Meta:
+        verbose_name_plural = 'Теги'
+
+@register_snippet
 class Avtors(models.Model):
     avtor_full_name = models.CharField(max_length=250, verbose_name="Имя автора")
     avtor_photo = models.ForeignKey(

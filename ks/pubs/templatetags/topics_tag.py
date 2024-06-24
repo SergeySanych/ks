@@ -1,5 +1,5 @@
 from django import template
-from home.models import Topics, Components, Countries
+from home.models import Topics, Components, Countries, Tags
 
 register = template.Library()
 
@@ -72,5 +72,23 @@ def countries(context):
 def countries_en(context):
     return {
         'countries': Countries.objects.all(),
+        'request': context['request'],
+    }
+
+
+# Tags snippets
+@register.inclusion_tag('tags/tags.html', takes_context=True)
+def tags(context):
+    return {
+        'countries': Countries.objects.all(),
+        'request': context['request'],
+    }
+
+
+# Tags snippets for en
+@register.inclusion_tag('tags/tags_en.html', takes_context=True)
+def tags_en(context):
+    return {
+        'tags': Tags.objects.all(),
         'request': context['request'],
     }

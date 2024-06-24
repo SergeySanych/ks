@@ -1,0 +1,8 @@
+{% for tag in tags %}
+    <li>
+        <a href="/ru/tags/?tag={{ tag.tag_name_ru }}"><span
+                class="fs14 widthcanvastext">{{ tag.tag_name_ru }}</span></a>
+    </li>
+    <li class="uk-nav-divider"></li>
+
+{% endfor %}
